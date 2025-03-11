@@ -1,0 +1,8 @@
+{
+	"array":[
+		{"index":"1000", "name":"Spider", "drop_exp":10},
+		{"index":"1001", "name":"Zombie", "drop_exp":20},
+		{"index":"1002", "name":"Skeleton", "drop_exp":50},
+		{"index":"1003", "name":"BossOrc", "drop_exp":800}
+	]
+}

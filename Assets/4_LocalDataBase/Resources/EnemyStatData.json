@@ -1,0 +1,60 @@
+{
+  "array": [
+    {
+      "index": "Spider",
+      "hp": 100,
+      "maxHp": 100,
+      "power": 5,
+      "criticalPercent": 0.1,
+      "criticalIncreasePercent": 0.3,
+      "defense": 5,
+      "moveSpeed": 3,
+      "targetingRange": 16,
+      "attackRange": 2,
+      "skillUseDistance": 0,
+      "useable_skill": [ "none" ]
+    },
+    {
+      "index": "Zombie",
+      "hp": 300,
+      "maxHp": 300,
+      "power": 10,
+      "criticalPercent": 0.1,
+      "criticalIncreasePercent": 0.3,
+      "defense": 10,
+      "moveSpeed": 1.2,
+      "targetingRange": 18,
+      "attackRange": 1,
+      "skillUseDistance": 0,
+      "useable_skill": [ "none" ]
+    },
+    {
+      "index": "Skeleton",
+      "hp": 500,
+      "maxHp": 500,
+      "power": 15,
+      "criticalPercent": 0.1,
+      "criticalIncreasePercent": 0.3,
+      "defense": 20,
+      "moveSpeed": 1.5,
+      "targetingRange": 16,
+      "attackRange": 1.7,
+      "skillUseDistance": 0,
+      "useable_skill": [ "none" ]
+    },
+    {
+      "index": "BossOrc",
+      "hp": 2000,
+      "maxHp": 2000,
+      "power": 30,
+      "criticalPercent": 0.2,
+      "criticalIncreasePercent": 0.3,
+      "defense": 35,
+      "moveSpeed": 2.5,
+      "targetingRange": 30,
+      "attackRange": 2,
+      "skillUseDistance": 10,
+      "useable_skill": [ "BossWind", "BossShootEnergy" ]
+    }
+  ]
+}

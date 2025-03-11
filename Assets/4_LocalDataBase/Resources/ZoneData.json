@@ -1,0 +1,8 @@
+{
+	"array":[
+		{"index":"1000", "zone_name":"spider_zone", "spawnable_enemy_array":[1000], "max_spawn_count":10, "respawn_time":10, "respawn_probability":1},
+		{"index":"1001", "zone_name":"zombie_zone", "spawnable_enemy_array":[1001], "max_spawn_count":15, "respawn_time":10, "respawn_probability":1},
+		{"index":"1002", "zone_name":"skeleton_zone", "spawnable_enemy_array":[1002], "max_spawn_count":20, "respawn_time":10, "respawn_probability":1},
+		{"index":"1003", "zone_name":"boss_zone", "spawnable_enemy_array":[1003], "max_spawn_count":1, "respawn_time":60, "respawn_probability":0.1}
+	]
+}

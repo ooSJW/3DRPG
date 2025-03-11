@@ -1,0 +1,12 @@
+{
+	"array":[
+		{"index":"oldPistol", "item_type":"weapon", "item_value":5, "icon_path":""},
+		{"index":"rarePistol", "item_type":"weapon", "item_value":10, "icon_path":""},
+		{"index":"uniquePistol", "item_type":"weapon", "item_value":20, "icon_path":""},
+		{"index":"oldArmor", "item_type":"armor", "item_value":5, "icon_path":""},
+		{"index":"shiningArmor", "item_type":"armor", "item_value":10, "icon_path":""},
+		{"index":"smallPotion", "item_type":"consume", "item_value":75, "icon_path":""},
+		{"index":"mediumPotion", "item_type":"consume", "item_value":125, "icon_path":""},
+		{"index":"largePotion", "item_type":"consume", "item_value":175, "icon_path":""}
+	]
+}
