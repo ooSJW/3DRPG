@@ -91,7 +91,7 @@ namespace project02
             {
                 if (CloseToPlayer)
                 {
-                    if (AllFieldEnemyObjectList.Count < SpawnableMaxCount)
+                    if (AllFieldEnemyObjectList.Count < SpawnableMaxCount * 0.2f)
                     {
                         intervalTime += Time.deltaTime;
                         if (intervalTime >= respawnTime)

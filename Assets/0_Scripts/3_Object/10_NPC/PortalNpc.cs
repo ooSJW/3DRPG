@@ -22,8 +22,19 @@ namespace project02
         {
             if (canUsePortal)
             {
-                if (Input.GetKeyDown(KeyCode.R))    
+                if (Input.GetKeyDown(KeyCode.R))
+                {
                     portalUI.SetActive(true);
+                    try
+                    {
+                        MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.StartDialouge(transform);
+                        MainSystem.Instance.UIManager.UIController.ShowCursor = true;
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
+                }
             }
         }
 

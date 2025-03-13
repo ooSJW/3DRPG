@@ -44,15 +44,12 @@ namespace project02
             get => showCursor;
             set
             {
-                if (showCursor != value)
-                {
-                    showCursor = value;
-                    Cursor.visible = showCursor;
-                    if (showCursor)
-                        Cursor.lockState = CursorLockMode.None;
-                    else
-                        Cursor.lockState = CursorLockMode.Locked;
-                }
+                showCursor = value;
+                Cursor.visible = showCursor;
+                if (showCursor)
+                    Cursor.lockState = CursorLockMode.None;
+                else
+                    Cursor.lockState = CursorLockMode.Locked;
             }
         }
     }
@@ -113,6 +110,8 @@ namespace project02
                     GameObject ui = activeUIList[activeUIList.Count - 1];
                     ui.SetActive(false);
                     activeUIList.Remove(ui);
+                    if (activeUIList.Count == 0)
+                        ShowCursor = false;
                 }
                 else
                 {

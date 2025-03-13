@@ -18128,6 +18128,7 @@ MonoBehaviour:
   offset: {x: 0, y: 3, z: -4}
   sensitivityX: 120
   sensitivityY: 120
+  currentDialougeNpc: {fileID: 0}
 --- !u!4 &605815665
 Transform:
   m_ObjectHideFlags: 0
@@ -30988,7 +30989,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1996412757}
         m_TargetAssemblyTypeName: project02.MenuUI, Assembly-CSharp
-        m_MethodName: ContinueGame
+        m_MethodName: SaveAndContinueGame
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35279,6 +35280,7 @@ MonoBehaviour:
   <ZoneController>k__BackingField: {fileID: 1966870472}
   <SoundController>k__BackingField: {fileID: 887125310}
   <UIController>k__BackingField: {fileID: 103344494}
+  <FollowCamera>k__BackingField: {fileID: 605815664}
 --- !u!1001 &1254064064
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42224,7 +42226,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1996412757}
         m_TargetAssemblyTypeName: project02.MenuUI, Assembly-CSharp
-        m_MethodName: ContinueGame
+        m_MethodName: SaveAndContinueGame
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

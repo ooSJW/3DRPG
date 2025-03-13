@@ -39,7 +39,7 @@ namespace project02
                 {
                     if (CurrentQuestIndex == 1040.ToString() && questDict[CurrentQuestIndex].QuestState == QuestState.During)
                     {
-                        EndTalk();
+                        // EndTalk();
                         return;
                     }
 
@@ -101,19 +101,38 @@ namespace project02
             get => isTalking;
             set
             {
-                if (isTalking != value)
-                {
-                    if (CurrentQuestIndex == 1040.ToString() && questDict[CurrentQuestIndex].QuestState == QuestState.During)
-                    {
-                        portalUI.SetActive(true);
-                    }
-                    if (questDict.ContainsKey(CurrentQuestIndex))
-                        questTalkUI.SetActive(value);
-                    else
-                        return;
-                }
-
                 isTalking = value;
+                if (isTalking)
+                {
+                    try
+                    {
+                        MainSystem.Instance.PlayerManager.Player.PlayerInput.CanMove = false;
+                        MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.StartDialouge(NpcTransform);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        MainSystem.Instance.PlayerManager.Player.PlayerInput.CanMove = true;
+                        MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.EndDialouge();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
+                }
+                if (CurrentQuestIndex == 1040.ToString() && questDict[CurrentQuestIndex].QuestState == QuestState.During)
+                {
+                    portalUI.SetActive(value);
+                    MainSystem.Instance.UIManager.UIController.ShowCursor = value;
+                }
+                if (questDict.ContainsKey(CurrentQuestIndex))
+                    questTalkUI.SetActive(value);
             }
         }
     }
@@ -133,6 +152,8 @@ namespace project02
 
         private bool canTalk = false;
         public bool CanTalk { get => canTalk; set => canTalk = value; }
+
+        public Transform NpcTransform { get; set; }
     }
     public partial class QuestController : MonoBehaviour // Initialize
     {
@@ -179,6 +200,7 @@ namespace project02
             talkIndex = -1;
             IsTalking = false;
             ChangeQuestMark();
+            MainSystem.Instance.UIManager.UIController.ShowCursor = false;
         }
         private void AcceptQuest()
         {
@@ -227,10 +249,12 @@ namespace project02
         }
         public void ClosePortalUI()
         {
+            EndTalk();
             portalUI.SetActive(false);
         }
         public void UsePortal(string sceneName)
         {
+            EndTalk();
             portalUI.SetActive(false);
             MainSystem.Instance.PlayerManager.Player.Save();
             SaveQuest();

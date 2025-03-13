@@ -23,7 +23,7 @@ namespace project02
         public SkillData SkillData { get; private set; } = default;
 
         private string path = null;
-        private string fileName = "save";
+        // private string fileName = "save";
         public int CurrentSlot { get; set; } = 0;
     }
     public partial class DataManager : MonoBehaviour // Initialize

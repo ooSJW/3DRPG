@@ -12,6 +12,17 @@ namespace project02
 
     public partial class FollowCamera : MonoBehaviour
     {
+        private bool isInDialouge;
+        public bool IsInDialouge
+        {
+            get => isInDialouge;
+            set
+            {
+                if (isInDialouge != value)
+                    isInDialouge = value;
+            }
+        }
+
         [SerializeField] private LayerMask mask;
         [SerializeField] private Transform targetTransform;
         [SerializeField] private Vector3 offset;
@@ -20,8 +31,11 @@ namespace project02
 
         private Transform cameraTransform;
         private Vector3 OriginalOffset;
+        private Vector3 Originalrotation;
         private float mouseX;
         private float mouseY;
+
+        public Transform currentDialougeNpc;
     }
     public partial class FollowCamera : MonoBehaviour
     {
@@ -29,6 +43,7 @@ namespace project02
         {
             cameraTransform = transform.GetChild(0);
             OriginalOffset = offset;
+            mouseX = 180;
         }
         public void Initialize()
         {
@@ -37,7 +52,7 @@ namespace project02
         }
         private void Setup()
         {
-
+            isInDialouge = false;
         }
     }
     public partial class FollowCamera : MonoBehaviour
@@ -49,9 +64,16 @@ namespace project02
 
         private void LateUpdate()
         {
-            offset = (Vector3)(transform.localToWorldMatrix * OriginalOffset);
-            Rotate();
-            SpringArm();
+            if (IsInDialouge)
+            {
+                RotateCameraTowardsNPC();
+            }
+            else
+            {
+                offset = (Vector3)(transform.localToWorldMatrix * OriginalOffset);
+                Rotate();
+                SpringArm();
+            }
         }
     }
     public partial class FollowCamera : MonoBehaviour
@@ -83,6 +105,25 @@ namespace project02
                 mouseY = Mathf.Clamp(mouseY, -60f, 90f);
                 transform.eulerAngles = new Vector3(-mouseY, mouseX, 0);
             }
+        }
+        private void RotateCameraTowardsNPC()
+        {
+            Vector3 directionToNPC = currentDialougeNpc.position - transform.position;
+            directionToNPC.y = 0;
+
+            Quaternion targetRotation = Quaternion.LookRotation(directionToNPC);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+        }
+
+        public void StartDialouge(Transform npcTransform)
+        {
+            currentDialougeNpc = npcTransform;
+            IsInDialouge = true;
+        }
+        public void EndDialouge()
+        {
+            currentDialougeNpc = null;
+            IsInDialouge = false;
         }
     }
 }

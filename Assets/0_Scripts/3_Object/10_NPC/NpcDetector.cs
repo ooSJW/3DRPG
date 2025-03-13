@@ -13,11 +13,16 @@ namespace project02
     {
         private void OnTriggerEnter(Collider other)
         {
-            MainSystem.Instance.QuestManager.QuestController.CanTalk = true;
+            QuestController questController = MainSystem.Instance.QuestManager.QuestController;
+            questController.CanTalk = true;
+            questController.NpcTransform = transform;
+
         }
         private void OnTriggerExit(Collider other)
         {
-            MainSystem.Instance.QuestManager.QuestController.CanTalk = false;
+            QuestController questController = MainSystem.Instance.QuestManager.QuestController;
+            questController.CanTalk = false;
+            questController.NpcTransform = null;
         }
 
     }

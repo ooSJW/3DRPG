@@ -20,7 +20,7 @@ namespace project02
         {
 
         }
-        public  void Initialize()
+        public void Initialize()
         {
             Allocate();
             Setup();
@@ -49,14 +49,14 @@ namespace project02
             while (!loadScene.isDone)
             {
                 yield return null;
-                if (loadScene.progress < 0.9f)
+                if (loadScene.progress < 0.8f)
                 {
                     progressBar.fillAmount = loadScene.progress;
                 }
                 else
                 {
-                    timer += Time.unscaledDeltaTime;
-                    progressBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer);
+                    timer += Time.unscaledDeltaTime * 0.5f;
+                    progressBar.fillAmount = Mathf.Lerp(0.8f, 1f, timer);
                     if (progressBar.fillAmount >= 1f)
                     {
                         loadScene.allowSceneActivation = true;

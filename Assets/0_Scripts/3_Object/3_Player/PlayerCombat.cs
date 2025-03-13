@@ -63,27 +63,31 @@ namespace project02
         public void HitEnemyFilter()
         {
             MainSystem.Instance.SoundManager.SoundController.SpecialEffects.PlaySfx(SoundClipName.PlayerShoot);
-            SkillInformation skillInfo = player.PlayerSkillDict[player.PlayerSkill].SkillInfo;
-            Vector3 center = transform.position - (transform.forward * 0.5f);
-            Collider[] targetCollider = Physics.OverlapSphere(center, skillInfo.range, layer);
-
-            for (int i = 0; i < targetCollider.Length; ++i)
+            if (player.PlayerSkillDict.ContainsKey(player.PlayerSkill))
             {
-                Vector3 direction = targetCollider[i].transform.position - center;
+                SkillInformation skillInfo = player.PlayerSkillDict[player.PlayerSkill].SkillInfo;
+                Vector3 center = transform.position - (transform.forward * 0.5f);
+                Collider[] targetCollider = Physics.OverlapSphere(center, skillInfo.range, layer);
 
-                float angle = Vector3.Angle(transform.forward, direction);
 
-                if (angle <= skillInfo.angle_range * 0.5f)
+                for (int i = 0; i < targetCollider.Length; ++i)
                 {
-                    hitEnemyList.Add(targetCollider[i].GetComponent<Enemy>());
+                    Vector3 direction = targetCollider[i].transform.position - center;
 
-                    Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
-                    hitPoint.y += 1;
+                    float angle = Vector3.Angle(transform.forward, direction);
 
-                    MainSystem.Instance.PoolManager.Spawn(PoolObject.EnemyHitEffect.ToString(), null, hitPoint);
+                    if (angle <= skillInfo.angle_range * 0.5f)
+                    {
+                        hitEnemyList.Add(targetCollider[i].GetComponent<Enemy>());
+
+                        Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
+                        hitPoint.y += 1;
+
+                        MainSystem.Instance.PoolManager.Spawn(PoolObject.EnemyHitEffect.ToString(), null, hitPoint);
+                    }
                 }
+                SendDamage();
             }
-            SendDamage();
         }
 
         public void MeleeFilter()

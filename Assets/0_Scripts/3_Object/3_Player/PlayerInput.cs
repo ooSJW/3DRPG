@@ -165,7 +165,7 @@ namespace project02
             {
                 if (SaveInputKey())
                 {
-                    for (int i = 0; i+1 < inputBuffer.Length; i ++ )
+                    for (int i = 0; i + 1 < inputBuffer.Length; i++)
                     {
                         string CompareTarget1 = KeyFromArray(new string[] { inputBuffer[i], inputBuffer[i + 1] });
                         string CompareTarget2 = KeyFromArray(new string[] { inputBuffer[i + 1], inputBuffer[i] });
@@ -178,7 +178,7 @@ namespace project02
                                 return;
                             }
                         }
-                        if (commandDict.ContainsKey(CompareTarget2))
+                        else if (commandDict.ContainsKey(CompareTarget2))
                         {
                             if (!commandDict[CompareTarget2].IsCoolTime)
                             {

@@ -18,6 +18,9 @@ namespace project02
         [field: SerializeField] public ZoneController ZoneController { get; private set; }
         [field: SerializeField] public SoundController SoundController { get; private set; }
         [field: SerializeField] public UIController UIController { get; private set; }
+
+        // InGameScene Member
+        [field: SerializeField] public FollowCamera FollowCamera { get; private set; }
     }
     public partial class BaseScene : MonoBehaviour // Initialize
     {

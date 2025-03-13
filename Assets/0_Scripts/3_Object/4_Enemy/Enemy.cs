@@ -20,11 +20,16 @@ namespace project02
             get => hp;
             set
             {
-                hp = value;
-                if (hp > 0)
+                if (value > 0)
+                {
+                    hp = value;
                     State = EnemyState.GetDamage;
+                }
                 else
+                {
+                    hp = 0;
                     State = EnemyState.Death;
+                }
 
                 MainSystem.Instance.SoundManager.SoundController.SpecialEffects.PlaySfx(SoundClipName.EnemyHit);
                 infoUI.SetHpUI(hp, EnemyStatInformation.maxHp);
@@ -79,6 +84,8 @@ namespace project02
                             break;
 
                         case EnemyState.Death:
+                            enemyCollider.enabled = false;
+                            AddQuestKillCount();
                             EnemyMovement.StopNavSetting();
                             EnemyMovement.SetTargeting(false);
                             EnemyAnimation.SetTrigger(EnemyAnimationParam.Death);
@@ -92,7 +99,6 @@ namespace project02
                             break;
                     }
                 }
-                state = value;
             }
         }
 
@@ -104,12 +110,10 @@ namespace project02
         public bool IsAttack { get; set; } = false;
         public bool SuperArmor { get; set; }
 
-        [SerializeField] LayerMask deadLayer;
-
         private ZoneObject zone = default;
         private Transform playerTransform = default;
         private BossRoomDoor bossRoomDoor = default;
-
+        [SerializeField] private Collider enemyCollider;
         [field: SerializeField] public EnemyMovement EnemyMovement { get; private set; } = default;
         [field: SerializeField] public EnemyHitDetector EnemyHitDetector { get; private set; } = default;
         [field: SerializeField] public EnemyCombat EnemyCombat { get; private set; } = default;
@@ -169,6 +173,7 @@ namespace project02
         private void Setup()
         {
             state = EnemyState.Idle;
+            enemyCollider.enabled = true;
         }
     }
 
@@ -196,13 +201,17 @@ namespace project02
         {
             Target = null;
 
-            PoolObject name = Enum.Parse<PoolObject>(gameObject.name);
-            BaseQuest.enemyKillCount[(int)name]++;
+            // AddQuestKillCount();
             if (bossRoomDoor != null)
                 bossRoomDoor.IsBossDead = true;
 
             MainSystem.Instance.EnemyManager.SignDownEnemy(this);
             zone.Despawn(this);
+        }
+        public void AddQuestKillCount()
+        {
+            PoolObject name = Enum.Parse<PoolObject>(gameObject.name);
+            BaseQuest.enemyKillCount[(int)name]++;
         }
     }
     public partial class Enemy : CombatObjectBase // Private Property

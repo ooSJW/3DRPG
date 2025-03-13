@@ -20,6 +20,12 @@ namespace project02
         {
             MainSystem.Instance.SceneManager.LoadScene(sceneName);
         }
+        public void SaveAndContinueGame(string sceneName)
+        {
+            MainSystem.Instance.PlayerManager.Player.Save();
+            MainSystem.Instance.QuestManager.QuestController.SaveQuest();
+            MainSystem.Instance.SceneManager.LoadScene(sceneName);
+        }
 
         public void WarningMsg()
         {
@@ -50,7 +56,11 @@ namespace project02
         }
         public void QuitGame()
         {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
         }
     }
 }

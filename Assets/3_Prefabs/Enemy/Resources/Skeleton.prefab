@@ -58,9 +58,7 @@ MonoBehaviour:
   damageTextTransform: {fileID: 7100342728873919981}
   hitPoint: {x: 0, y: 0, z: 0}
   LastDamageSender: {fileID: 0}
-  deadLayer:
-    serializedVersion: 2
-    m_Bits: 4096
+  enemyCollider: {fileID: -2185750503749749314}
   <EnemyMovement>k__BackingField: {fileID: 1837515608381464706}
   <EnemyHitDetector>k__BackingField: {fileID: 7965497452608331167}
   <EnemyCombat>k__BackingField: {fileID: 8709464396719625576}
