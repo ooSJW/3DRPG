@@ -60,7 +60,9 @@ namespace project02
                         MoveNavSetting();
                         Movement(EnemyState.Return);
                         break;
-
+                    case EnemyState.GetDamage:
+                        enemy.State = EnemyState.Idle;
+                        break;
                     case EnemyState.Attack:
                         if (enemy.Target != null)
                         {
@@ -70,11 +72,6 @@ namespace project02
                         else
                             enemy.State = EnemyState.Idle;
                         break;
-
-                    default:
-                        StopNavSetting();
-                        break;
-
                 }
             }
             Targeting();

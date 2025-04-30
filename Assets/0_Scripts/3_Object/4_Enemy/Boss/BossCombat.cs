@@ -11,6 +11,8 @@ namespace project02
     using System.Collections.Generic;
     using UnityEngine;
     using static project02.PlayerStatData;
+    using static UnityEngine.Rendering.HableCurve;
+
     public partial class BossCombat : EnemyCombat // Data Property
     {
         public override SkillName BossSkill
@@ -51,10 +53,18 @@ namespace project02
     {
         public Dictionary<SkillName, SkillBase> BossSkillDict { get; private set; }
         [SerializeField] private LayerMask layer;
+
         private List<Player> hitPlayerList;
 
         private float intervalTime = 0;
         private float skillCollingTime = 7f;
+
+
+        public Material dangerMaterial;
+        private MeshFilter meshFilter;
+        private MeshRenderer meshRenderer;
+        private Mesh dangerMesh;
+        public int segments = 30;
     }
 
 
@@ -64,6 +74,14 @@ namespace project02
         {
             BossSkillDict = new Dictionary<SkillName, SkillBase>();
             hitPlayerList = new List<Player>();
+
+            meshFilter = gameObject.AddComponent<MeshFilter>();
+            meshRenderer = gameObject.AddComponent<MeshRenderer>();
+
+            dangerMaterial = new Material(Shader.Find("Unlit/Color"));
+            dangerMaterial.color = new Color(1f, 0f, 0f, 0.5f);
+
+            meshRenderer.material = dangerMaterial;
         }
         public override void Initialize(Enemy enemyValue)
         {
@@ -150,6 +168,55 @@ namespace project02
             SendDamage();
         }
 
+
+        public override void DrawDangerZone()
+        {
+            SkillInformation skillInfo = BossSkillDict[bossSkill].SkillInfo;
+
+            float radius = skillInfo.range;
+            float angleRange = skillInfo.angle_range;
+            float heightOffset = 0.1f;
+
+            dangerMesh = new Mesh();
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> triangles = new List<int>();
+
+            Vector3 bossPosition = transform.position;
+            bossPosition.y += heightOffset;
+            vertices.Add(Vector3.zero);
+
+            float startAngle = -angleRange / 2f;
+            float endAngle = angleRange / 2f;
+
+            for (int i = 0; i <= segments; i++)
+            {
+                float angle = Mathf.Lerp(startAngle, endAngle, (float)i / segments);
+                Vector3 dir = Quaternion.Euler(0, angle, 0) * Vector3.forward;
+                Vector3 point = dir * radius;
+                vertices.Add(point);
+            }
+
+            for (int i = 1; i < vertices.Count - 1; i++)
+            {
+                triangles.Add(0);
+                triangles.Add(i);
+                triangles.Add(i + 1);
+            }
+
+            dangerMesh.vertices = vertices.ToArray();
+            dangerMesh.triangles = triangles.ToArray();
+            dangerMesh.RecalculateNormals();
+
+            meshFilter.mesh = dangerMesh;
+
+            meshFilter.transform.position = bossPosition;
+            meshFilter.transform.rotation = transform.rotation;
+            meshRenderer.enabled = true;
+        }
+        public override void ClearDangetZone()
+        {
+            meshRenderer.enabled = false;
+        }
 
         public override void SkillFilter()
         {

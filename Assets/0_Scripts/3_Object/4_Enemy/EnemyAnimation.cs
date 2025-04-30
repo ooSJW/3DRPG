@@ -85,7 +85,7 @@ namespace project02
                 enemy.transform.DOMove(transform.position + knockbackDirection * 0.5f, 0.3f).SetEase(Ease.OutBack);
             }
         }
- 
+
         public void Death()
         {
             enemy.Death();
@@ -106,6 +106,14 @@ namespace project02
         public void SkillFilter()
         {
             enemy.EnemyCombat.SkillFilter();
+        }
+        public void DrawDangerZone()
+        {
+            enemy.EnemyCombat.DrawDangerZone();
+        }
+        public void ClearDangerZone()
+        {
+            enemy.EnemyCombat.ClearDangetZone();
         }
 
         public void UseSkill(SkillName skillName)

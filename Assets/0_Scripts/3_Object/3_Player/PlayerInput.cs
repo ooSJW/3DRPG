@@ -10,6 +10,7 @@ namespace project02
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Text;
     using Unity.VisualScripting;
     using UnityEditor;
     using UnityEngine;
@@ -29,12 +30,16 @@ namespace project02
         private float evadeIntervalTime = 0;
 
         public bool CanMove { get; set; } = true;
+
+        private StringBuilder compareTarget;
+        private string compareTargetStr;
     }
     public partial class PlayerInput : MonoBehaviour // Initialize
     {
         private void Allocate()
         {
             commandDict = new Dictionary<string, SkillBase>();
+            compareTarget = new StringBuilder();
             inputBuffer = new string[6];
 
             commandProgress -= EvadeKeyPress;
@@ -167,22 +172,31 @@ namespace project02
                 {
                     for (int i = 0; i + 1 < inputBuffer.Length; i++)
                     {
-                        string CompareTarget1 = KeyFromArray(new string[] { inputBuffer[i], inputBuffer[i + 1] });
-                        string CompareTarget2 = KeyFromArray(new string[] { inputBuffer[i + 1], inputBuffer[i] });
+                        compareTarget.Clear();
+                        compareTarget.Append(inputBuffer[i]);
+                        compareTarget.Append(inputBuffer[i + 1]);
+                        compareTargetStr = compareTarget.ToString();
 
-                        if (commandDict.ContainsKey(CompareTarget1))
+                        if (commandDict.ContainsKey(compareTargetStr))
                         {
-                            if (!commandDict[CompareTarget1].IsCoolTime)
+                            if (!commandDict[compareTargetStr].IsCoolTime)
                             {
-                                player.PlayerSkill = commandDict[CompareTarget1].GetSkillName();
+                                player.PlayerSkill = commandDict[compareTargetStr].GetSkillName();
                                 return;
                             }
                         }
-                        else if (commandDict.ContainsKey(CompareTarget2))
+                        // 예시로 LShift + Q 조합을 사용할 때 키를 누른 순서와 상관없이 탐색하기 위해 버퍼의 요소 순서를 바꿔서도 탐색.
+                        // Sort를 사용해 한 번만 검사하려다 마우스 입력, shift , ctrl 키 등을 검사할 때 모호성이 생길 것 같아 이중 검사.
+
+                        compareTarget.Clear();
+                        compareTarget.Append(inputBuffer[i + 1]);
+                        compareTarget.Append(inputBuffer[i]);
+                        compareTargetStr = compareTarget.ToString();
+                        if (commandDict.ContainsKey(compareTargetStr))
                         {
-                            if (!commandDict[CompareTarget2].IsCoolTime)
+                            if (!commandDict[compareTargetStr].IsCoolTime)
                             {
-                                player.PlayerSkill = commandDict[CompareTarget2].GetSkillName();
+                                player.PlayerSkill = commandDict[compareTargetStr].GetSkillName();
                                 return;
                             }
                         }
@@ -195,10 +209,6 @@ namespace project02
             }
         }
 
-        private string KeyFromArray(string[] keyToFInd)
-        {
-            return string.Join("", keyToFInd);
-        }
 
         private void InputTimer()
         {
@@ -211,6 +221,7 @@ namespace project02
             if (inputIntervalTime >= initialTime)
             {
                 Array.Clear(inputBuffer, 0, inputBuffer.Length);
+                compareTarget.Clear();
                 inputIntervalTime = 0;
                 inputBufferIndex = 0;
             }
