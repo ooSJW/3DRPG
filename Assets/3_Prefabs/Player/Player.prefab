@@ -1254,6 +1254,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 7818288660784817453}
+  <DefaultFootStep>k__BackingField: 0
+  currentFootStep: 0
 --- !u!1 &7818288660777424529
 GameObject:
   m_ObjectHideFlags: 0
@@ -4384,6 +4386,7 @@ GameObject:
   - component: {fileID: 3080294549860288836}
   - component: {fileID: 1555474247215433125}
   - component: {fileID: 2224909366439008599}
+  - component: {fileID: 4503345155656780817}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -4465,6 +4468,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 748bea118d3e2fe49839e6129c13638e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputAction:
+    m_Name: Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: f67bb971-eb6c-4d21-84b2-9d22b41bd920
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!114 &7818288660998126044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4561,6 +4573,37 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.8853897, z: 0}
+--- !u!114 &4503345155656780817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7818288660998126040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 71391b45be7f51644956eb737fbafbfd,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: CommandKey
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &7818288661170630167
 GameObject:
   m_ObjectHideFlags: 0

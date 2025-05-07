@@ -6,50 +6,33 @@
 namespace project02
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
-    using Unity.VisualScripting;
-    using UnityEditor;
     using UnityEngine;
+    using UnityEngine.InputSystem;
 
     public partial class PlayerInput : MonoBehaviour // Data Field
     {
         private Player player;
         private Action commandProgress = null;
-        private string[] inputBuffer;
-        private int inputBufferIndex = 0;
-
-        private float initialTime = 0.2f;
-        private float inputIntervalTime = 0;
-
-        public Dictionary<string, SkillBase> commandDict;
+        public bool CanMove { get; set; } = true;
         private bool canEvade = true;
         private float evadeIntervalTime = 0;
 
-        public bool CanMove { get; set; } = true;
-
-        private StringBuilder compareTarget;
-        private string compareTargetStr;
+        public Dictionary<int, SkillBase> commandDict;
+        private PlayerSkillInput skillInput;
+        private int intInputBuffer;
     }
     public partial class PlayerInput : MonoBehaviour // Initialize
     {
         private void Allocate()
         {
-            commandDict = new Dictionary<string, SkillBase>();
-            compareTarget = new StringBuilder();
-            inputBuffer = new string[6];
+            commandDict = new Dictionary<int, SkillBase>();
 
             commandProgress -= EvadeKeyPress;
             commandProgress += EvadeKeyPress;
             commandProgress -= WeaponKeyPress;
             commandProgress += WeaponKeyPress;
-            commandProgress -= CompareCommand;
-            commandProgress += CompareCommand;
-            commandProgress -= InputTimer;
-            commandProgress += InputTimer;
+            InitSkillInput();
         }
         public void Initialize(Player playerValue)
         {
@@ -76,6 +59,70 @@ namespace project02
     }
     public partial class PlayerInput : MonoBehaviour // Property
     {
+        private void InitSkillInput()
+        {
+            skillInput = new PlayerSkillInput();
+            skillInput.Enable();
+
+            skillInput.CommandKey.e.performed += ctx => intInputBuffer |= (int)InputKey.e;
+            skillInput.CommandKey.e.canceled += ctx => intInputBuffer &= ~(int)InputKey.e;
+
+            skillInput.CommandKey.f.performed += ctx => intInputBuffer |= (int)InputKey.f;
+            skillInput.CommandKey.f.canceled += ctx => intInputBuffer &= ~(int)InputKey.f;
+
+            skillInput.CommandKey.s.performed += ctx => intInputBuffer |= (int)InputKey.s;
+            skillInput.CommandKey.s.canceled += ctx => intInputBuffer &= ~(int)InputKey.s;
+
+            skillInput.CommandKey.q.performed += ctx => intInputBuffer |= (int)InputKey.q;
+            skillInput.CommandKey.q.canceled += ctx => intInputBuffer &= ~(int)InputKey.q;
+
+            skillInput.CommandKey.lShift.performed += ctx => intInputBuffer |= (int)InputKey.leftshift;
+            skillInput.CommandKey.lShift.canceled += ctx => intInputBuffer &= ~(int)InputKey.leftshift;
+
+            skillInput.CommandKey.mouseLeft.performed += ctx => intInputBuffer |= (int)InputKey.mouse0;
+            skillInput.CommandKey.mouseLeft.canceled += ctx => intInputBuffer &= ~(int)InputKey.mouse0;
+
+            skillInput.CommandKey.mouseRight.performed += ctx => intInputBuffer |= (int)InputKey.mouse1;
+            skillInput.CommandKey.mouseRight.canceled += ctx => intInputBuffer &= ~(int)InputKey.mouse1;
+
+            foreach (InputAction action in skillInput.CommandKey.Get())
+            {
+                action.performed += ctx => OnAnyKey();
+            }
+        }
+        private void OnAnyKey()
+        {
+            bool canAttack = CanMove &&
+                player.WeaponState == PlayerWeaponState.Equip &&
+                !player.PlayerMovement.isEvade &&
+                !player.PlayerCombat.IsAttack;
+
+            if (canAttack)
+            {
+                bool isMouse0Pressed = (intInputBuffer & (int)InputKey.mouse0) != 0;
+                if (commandDict.TryGetValue(intInputBuffer, out SkillBase skill) && !skill.IsCoolTime)
+                {
+                    SkillName skillName = skill.GetSkillName();
+
+                    if (skillName != SkillName.PistolBase)
+                        player.PlayerSkill = skillName;
+                    else
+                        PistolBase();
+
+                }
+                else if (isMouse0Pressed)
+                    PistolBase();
+            }
+        }
+
+        private void PistolBase()
+        {
+            bool showCursor = MainSystem.Instance.UIManager.UIController.ShowCursor;
+
+            if (!showCursor)
+                player.PlayerSkill = SkillName.PistolBase;
+        }
+
         public void SetCanMove(bool canMoveValue)
         {
             CanMove = canMoveValue;
@@ -160,94 +207,5 @@ namespace project02
             else
                 evadeIntervalTime = 0;
         }
-        private void CompareCommand()
-        {
-            bool canAttack = CanMove &&
-                            player.WeaponState == PlayerWeaponState.Equip &&
-                            !player.PlayerMovement.isEvade &&
-                            !player.PlayerCombat.IsAttack;
-            if (canAttack)
-            {
-                if (SaveInputKey())
-                {
-                    for (int i = 0; i + 1 < inputBuffer.Length; i++)
-                    {
-                        compareTarget.Clear();
-                        compareTarget.Append(inputBuffer[i]);
-                        compareTarget.Append(inputBuffer[i + 1]);
-                        compareTargetStr = compareTarget.ToString();
-
-                        if (commandDict.ContainsKey(compareTargetStr))
-                        {
-                            if (!commandDict[compareTargetStr].IsCoolTime)
-                            {
-                                player.PlayerSkill = commandDict[compareTargetStr].GetSkillName();
-                                return;
-                            }
-                        }
-                        // 예시로 LShift + Q 조합을 사용할 때 키를 누른 순서와 상관없이 탐색하기 위해 버퍼의 요소 순서를 바꿔서도 탐색.
-                        // Sort를 사용해 한 번만 검사하려다 마우스 입력, shift , ctrl 키 등을 검사할 때 모호성이 생길 것 같아 이중 검사.
-
-                        compareTarget.Clear();
-                        compareTarget.Append(inputBuffer[i + 1]);
-                        compareTarget.Append(inputBuffer[i]);
-                        compareTargetStr = compareTarget.ToString();
-                        if (commandDict.ContainsKey(compareTargetStr))
-                        {
-                            if (!commandDict[compareTargetStr].IsCoolTime)
-                            {
-                                player.PlayerSkill = commandDict[compareTargetStr].GetSkillName();
-                                return;
-                            }
-                        }
-
-                    }
-                    bool showCursor = MainSystem.Instance.UIManager.UIController.ShowCursor;
-                    if (!showCursor && Input.GetMouseButton(0))
-                        player.PlayerSkill = SkillName.PistolBase;
-                }
-            }
-        }
-
-
-        private void InputTimer()
-        {
-            /* 
-             intervalTime == LoopTime
-             initialTime == 배열 요소 초기화 시간( 현재 0.2f )
-             */
-            inputIntervalTime += Time.deltaTime;
-
-            if (inputIntervalTime >= initialTime)
-            {
-                Array.Clear(inputBuffer, 0, inputBuffer.Length);
-                compareTarget.Clear();
-                inputIntervalTime = 0;
-                inputBufferIndex = 0;
-            }
-        }
-
-        private bool SaveInputKey()
-        {
-            if (Input.anyKey)
-            {
-                foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
-                {
-                    if (Input.GetKey(keyCode))
-                    {
-                        string inputKey = keyCode.ToString().ToLower();
-                        if (!inputBuffer.Contains(inputKey) && inputBufferIndex < inputBuffer.Length)
-                        {
-                            inputBuffer[inputBufferIndex] = inputKey;
-                            inputBufferIndex++;
-                            break;
-                        }
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
     }
 }

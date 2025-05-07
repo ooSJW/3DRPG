@@ -43,6 +43,19 @@ namespace project02
         Equip,
         Unequip,
     }
+
+    public enum InputKey
+    {
+        none = 0,
+        s = 1 << 0,
+        f = 1 << 1,
+        e = 1 << 2,
+        q = 1 << 3,
+        leftshift = 1 << 4,
+        mouse0 = 1 << 5,
+        mouse1 = 1 << 6,
+    }
+
     public enum SkillName
     {
         None = 0,

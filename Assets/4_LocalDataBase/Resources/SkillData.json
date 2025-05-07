@@ -2,7 +2,7 @@
   "array": [
     {
       "index": "PistolBase",
-      "command": [ "none" ],
+      "command": [ "mouse0" ],
       "commandInUI": "nonePiUI",
       "power": 0,
       "power_growth": 0,

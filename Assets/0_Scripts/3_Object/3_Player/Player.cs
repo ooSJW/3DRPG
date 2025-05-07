@@ -17,6 +17,7 @@ namespace project02
     using DG.Tweening;
     using static UnityEngine.Rendering.DebugUI;
     using Newtonsoft.Json.Linq;
+    using UnityEditor.Experimental.GraphView;
 
     public partial class Player : CombatObjectBase // Data Property
     {
@@ -298,7 +299,18 @@ namespace project02
                     {
                         skillBase.Initialize(this);
                         PlayerSkillDict.Add(skillBase.GetSkillName(), skillBase);
-                        PlayerInput.commandDict.Add(string.Join("", skillBase.SkillInfo.command), skillBase);
+                        InputKey resultKey = InputKey.none;
+                        for (int j = 0; j < skillBase.SkillInfo.command.Length; j++)
+                        {
+                            if (Enum.TryParse<InputKey>(skillBase.SkillInfo.command[j], true, out InputKey parseKey))
+                                resultKey |= parseKey;
+                            else
+                                Debug.Log("Parse Error");
+                        }
+                        if (!PlayerInput.commandDict.ContainsKey((int)resultKey))
+                            PlayerInput.commandDict.Add((int)resultKey, skillBase);
+                        else
+                            Debug.Log("중복된 키 조합 등록 시도 :" + resultKey);
                     }
                 }
             }

@@ -74,7 +74,10 @@ namespace project02
         public void SetAttackAnimation(SkillName playerSkillValue)
         {
             if (playerSkillValue != SkillName.None)
+            {
+                animator.ResetTrigger(playerSkillValue.ToString());
                 animator.SetTrigger(playerSkillValue.ToString());
+            }
         }
 
         public void SendDamage()
