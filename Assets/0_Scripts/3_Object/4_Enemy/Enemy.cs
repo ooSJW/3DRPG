@@ -201,7 +201,6 @@ namespace project02
         {
             Target = null;
 
-            // AddQuestKillCount();
             if (bossRoomDoor != null)
                 bossRoomDoor.IsBossDead = true;
 

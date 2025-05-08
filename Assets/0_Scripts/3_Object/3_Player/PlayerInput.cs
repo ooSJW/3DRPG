@@ -20,7 +20,7 @@ namespace project02
 
         public Dictionary<int, SkillBase> commandDict;
         private PlayerSkillInput skillInput;
-        private int intInputBuffer;
+        private int inputBuffer;
     }
     public partial class PlayerInput : MonoBehaviour // Initialize
     {
@@ -64,27 +64,28 @@ namespace project02
             skillInput = new PlayerSkillInput();
             skillInput.Enable();
 
-            skillInput.CommandKey.e.performed += ctx => intInputBuffer |= (int)InputKey.e;
-            skillInput.CommandKey.e.canceled += ctx => intInputBuffer &= ~(int)InputKey.e;
+            skillInput.CommandKey.e.performed += ctx => inputBuffer |= (int)InputKey.e;
+            skillInput.CommandKey.e.canceled += ctx => inputBuffer &= ~(int)InputKey.e;
 
-            skillInput.CommandKey.f.performed += ctx => intInputBuffer |= (int)InputKey.f;
-            skillInput.CommandKey.f.canceled += ctx => intInputBuffer &= ~(int)InputKey.f;
+            skillInput.CommandKey.f.performed += ctx => inputBuffer |= (int)InputKey.f;
+            skillInput.CommandKey.f.canceled += ctx => inputBuffer &= ~(int)InputKey.f;
 
-            skillInput.CommandKey.s.performed += ctx => intInputBuffer |= (int)InputKey.s;
-            skillInput.CommandKey.s.canceled += ctx => intInputBuffer &= ~(int)InputKey.s;
+            skillInput.CommandKey.s.performed += ctx => inputBuffer |= (int)InputKey.s;
+            skillInput.CommandKey.s.canceled += ctx => inputBuffer &= ~(int)InputKey.s;
 
-            skillInput.CommandKey.q.performed += ctx => intInputBuffer |= (int)InputKey.q;
-            skillInput.CommandKey.q.canceled += ctx => intInputBuffer &= ~(int)InputKey.q;
+            skillInput.CommandKey.q.performed += ctx => inputBuffer |= (int)InputKey.q;
+            skillInput.CommandKey.q.canceled += ctx => inputBuffer &= ~(int)InputKey.q;
 
-            skillInput.CommandKey.lShift.performed += ctx => intInputBuffer |= (int)InputKey.leftshift;
-            skillInput.CommandKey.lShift.canceled += ctx => intInputBuffer &= ~(int)InputKey.leftshift;
+            skillInput.CommandKey.lShift.performed += ctx => inputBuffer |= (int)InputKey.leftshift;
+            skillInput.CommandKey.lShift.canceled += ctx => inputBuffer &= ~(int)InputKey.leftshift;
 
-            skillInput.CommandKey.mouseLeft.performed += ctx => intInputBuffer |= (int)InputKey.mouse0;
-            skillInput.CommandKey.mouseLeft.canceled += ctx => intInputBuffer &= ~(int)InputKey.mouse0;
+            skillInput.CommandKey.mouseLeft.performed += ctx => inputBuffer |= (int)InputKey.mouse0;
+            skillInput.CommandKey.mouseLeft.canceled += ctx => inputBuffer &= ~(int)InputKey.mouse0;
 
-            skillInput.CommandKey.mouseRight.performed += ctx => intInputBuffer |= (int)InputKey.mouse1;
-            skillInput.CommandKey.mouseRight.canceled += ctx => intInputBuffer &= ~(int)InputKey.mouse1;
+            skillInput.CommandKey.mouseRight.performed += ctx => inputBuffer |= (int)InputKey.mouse1;
+            skillInput.CommandKey.mouseRight.canceled += ctx => inputBuffer &= ~(int)InputKey.mouse1;
 
+            // 초기화 시 할당 (InputSystem사용)
             foreach (InputAction action in skillInput.CommandKey.Get())
             {
                 action.performed += ctx => OnAnyKey();
@@ -97,10 +98,11 @@ namespace project02
                 !player.PlayerMovement.isEvade &&
                 !player.PlayerCombat.IsAttack;
 
+            // OnAnyKey 내부
             if (canAttack)
             {
-                bool isMouse0Pressed = (intInputBuffer & (int)InputKey.mouse0) != 0;
-                if (commandDict.TryGetValue(intInputBuffer, out SkillBase skill) && !skill.IsCoolTime)
+                bool isMouse0Pressed = (inputBuffer & (int)InputKey.mouse0) != 0;
+                if (commandDict.TryGetValue(inputBuffer, out SkillBase skill) && !skill.IsCoolTime)
                 {
                     SkillName skillName = skill.GetSkillName();
 

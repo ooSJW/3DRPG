@@ -91,16 +91,6 @@ namespace project02
                 PlayerPrefs.SetInt("questState", (int)questState);
             }
 
-            /*List<SkillKeyValue> skillKeyList = new List<SkillKeyValue>();
-
-            playerSkillInformation = new PlayerSkillInformation()
-            {
-                skill_json = JsonConvert.SerializeObject(skillKeyList.ToArray()),
-                skill_point = MainSystem.Instance.PlayerManager.Player.SkillPoint,
-            }
-                PlayerPrefs.SetInt("skillPoint", playerSkillInformation.skill_point);
-            ;*/
-
             int skill_point = MainSystem.Instance.PlayerManager.Player.SkillPoint;
 
             PlayerPrefs.SetInt("skillPoint", skill_point);
@@ -113,14 +103,6 @@ namespace project02
 
             int skillLevel = jobject.TryGetValue(name.ToString(), out JToken value) ?
                     value.ToObject<int>() : 1;
-
-            /*List<SkillKeyValue> skillKeyList = new List<SkillKeyValue>();
-
-            skillKeyList.Add(new SkillKeyValue()
-            {
-                name = name.ToString(),
-                level = skillLevel,
-            });*/
 
             PlayerPrefs.SetInt(name.ToString(), skillLevel);
 

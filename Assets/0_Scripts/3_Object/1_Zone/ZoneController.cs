@@ -30,11 +30,6 @@ namespace project02
         }
         private void Setup()
         {
-            //for (int i = 0; i < zoneObjectList.Count; i++)
-            //{
-            //    SignUpZoneObject(zoneObjectList[i]);
-            //}
-            //print(zoneObjectList.Count);
             for (int i = 0; i < transform.childCount; ++i)
             {
                 SignUpZoneObject(transform.GetChild(i).GetComponent<ZoneObject>());

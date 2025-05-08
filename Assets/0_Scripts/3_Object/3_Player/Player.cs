@@ -76,7 +76,7 @@ namespace project02
             {
                 level = value;
                 PlayerStatInformation = MainSystem.Instance.DataManager.PlayerStatData.GetData(level.ToString());
-                Save();
+                MainSystem.Instance.PlayerManager.Save();
                 infoUI.SetLevelText(level);
             }
         }
@@ -90,7 +90,7 @@ namespace project02
                 if (hp <= 0)
                 {
                     State = PlayerState.Death;
-                    Save();
+                    MainSystem.Instance.PlayerManager.Save();
                 }
                 int uiHp = Mathf.Clamp(hp, 0, PlayerStatInformation.maxHp);
                 infoUI.SetHpUI(uiHp, PlayerStatInformation.maxHp);
@@ -321,35 +321,6 @@ namespace project02
 
     public partial class Player : CombatObjectBase // Property
     {
-        public void Save()
-        {
-            JObject jobject = new JObject();
-            jobject.Add("questIndex", MainSystem.Instance.QuestManager.QuestController.CurrentQuestIndex);
-            LocalData.Instance.Save(jobject, SaveData());
-        }
-        public PlayerStatInformation SaveData()
-        {
-            PlayerStatInformation saveData = new PlayerStatInformation()
-            {
-                index = PlayerStatInformation.index,
-                level = int.Parse(PlayerStatInformation.index),
-                maxExp = PlayerStatInformation.maxExp,
-                maxHp = PlayerStatInformation.maxHp,
-                moveSpeed = PlayerStatInformation.moveSpeed,
-                maxSpeed = PlayerStatInformation.maxSpeed,
-                evadeSpeed = PlayerStatInformation.evadeSpeed,
-                acceleration = PlayerStatInformation.acceleration,
-                power = PlayerStatInformation.power,
-                criticalPercent = PlayerStatInformation.criticalPercent,
-                criticalIncreasePercent = PlayerStatInformation.criticalIncreasePercent,
-                useable_skill = PlayerStatInformation.useable_skill,
-                defense = Defense,
-                skillPoint = SkillPoint,
-                hp = Hp,
-                exp = Exp,
-            };
-            return saveData;
-        }
         public void ChangeWeaponState()
         {
             if (weaponObject != null)

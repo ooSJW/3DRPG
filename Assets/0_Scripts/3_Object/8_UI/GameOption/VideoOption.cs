@@ -98,7 +98,7 @@ namespace project02
         }
         public void GoToMenu()
         {
-            MainSystem.Instance.PlayerManager.Player.Save();
+            MainSystem.Instance.PlayerManager.Save();
             MainSystem.Instance.QuestManager.QuestController.SaveQuest();
             MainSystem.Instance.SceneManager.LoadScene(SceneName.Menu.ToString());
         }

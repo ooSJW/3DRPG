@@ -15,7 +15,6 @@ namespace project02
     {
         public string name;
         public int drop_exp;
-        /*public string[] dropItemArray;*/
     }
 
     public partial class EnemyData // Data Field

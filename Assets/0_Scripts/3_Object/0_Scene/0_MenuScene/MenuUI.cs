@@ -22,7 +22,7 @@ namespace project02
         }
         public void SaveAndContinueGame(string sceneName)
         {
-            MainSystem.Instance.PlayerManager.Player.Save();
+            MainSystem.Instance.PlayerManager.Save();
             MainSystem.Instance.QuestManager.QuestController.SaveQuest();
             MainSystem.Instance.SceneManager.LoadScene(sceneName);
         }

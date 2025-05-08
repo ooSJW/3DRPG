@@ -91,7 +91,7 @@ namespace project02
                             EndTalk();
                     }
                 }
-                MainSystem.Instance.PlayerManager.Player.Save();
+                MainSystem.Instance.PlayerManager.Save();
             }
         }
 
@@ -213,7 +213,7 @@ namespace project02
             questDict[CurrentQuestIndex].ClearQuest();
             CurrentQuestIndex = questDict[CurrentQuestIndex].QuestInfo.nextQuestIndex;
             MainSystem.Instance.SoundManager.SoundController.SpecialEffects.PlaySfx(SoundClipName.ClearQuest);
-            MainSystem.Instance.PlayerManager.Player.Save();
+            MainSystem.Instance.PlayerManager.Save();
             questWindow.SetActive(false);
             MainSystem.Instance.UIManager.UIController.QuestWindow.RotateImage();
         }
@@ -256,7 +256,7 @@ namespace project02
         {
             EndTalk();
             portalUI.SetActive(false);
-            MainSystem.Instance.PlayerManager.Player.Save();
+            MainSystem.Instance.PlayerManager.Save();
             SaveQuest();
             MainSystem.Instance.SceneManager.LoadScene(sceneName);
         }
