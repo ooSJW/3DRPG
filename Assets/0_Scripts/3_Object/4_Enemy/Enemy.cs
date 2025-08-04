@@ -204,7 +204,7 @@ namespace project02
             if (bossRoomDoor != null)
                 bossRoomDoor.IsBossDead = true;
 
-            MainSystem.Instance.EnemyManager.SignDownEnemy(this);
+            MainSystem.Instance.EnemyManager.SignOutEnemy(this);
             zone.Despawn(this);
         }
         public void AddQuestKillCount()

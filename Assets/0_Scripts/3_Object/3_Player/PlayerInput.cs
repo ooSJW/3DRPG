@@ -14,8 +14,8 @@ namespace project02
     {
         private Player player;
         private Action commandProgress = null;
-        public bool CanMove { get; set; } = true;
-        private bool canEvade = true;
+        public bool MoveAble { get; set; } = true;
+        private bool evadeAble = true;
         private float evadeIntervalTime = 0;
 
         public Dictionary<int, SkillBase> commandDict;
@@ -93,13 +93,14 @@ namespace project02
         }
         private void OnAnyKey()
         {
-            bool canAttack = CanMove &&
+            bool attackAble = player.State != PlayerState.Death &&
+                MoveAble &&
                 player.WeaponState == PlayerWeaponState.Equip &&
                 !player.PlayerMovement.isEvade &&
                 !player.PlayerCombat.IsAttack;
 
             // OnAnyKey ³»ºÎ
-            if (canAttack)
+            if (attackAble)
             {
                 bool isMouse0Pressed = (inputBuffer & (int)InputKey.mouse0) != 0;
                 if (commandDict.TryGetValue(inputBuffer, out SkillBase skill) && !skill.IsCoolTime)
@@ -127,55 +128,55 @@ namespace project02
 
         public void SetCanMove(bool canMoveValue)
         {
-            CanMove = canMoveValue;
+            MoveAble = canMoveValue;
         }
         public float GetAxisRawZ()
         {
-            return CanMove ? Input.GetAxisRaw("Vertical") : 0;
+            return MoveAble ? Input.GetAxisRaw("Vertical") : 0;
         }
 
         public float GetAxisRawX()
         {
-            return CanMove ? Input.GetAxisRaw("Horizontal") : 0;
+            return MoveAble ? Input.GetAxisRaw("Horizontal") : 0;
         }
 
         public bool RunKeyPress()
         {
-            if (CanMove && (Input.GetButton("Vertical") || Input.GetButton("Horizontal")) && Input.GetKey(KeyCode.LeftShift))
+            if (MoveAble && (Input.GetButton("Vertical") || Input.GetButton("Horizontal")) && Input.GetKey(KeyCode.LeftShift))
                 return true;
             return false;
         }
 
         public bool SideWalkKeyPress()
         {
-            if (CanMove && Input.GetButton("Horizontal") && !Input.GetKey(KeyCode.W))
+            if (MoveAble && Input.GetButton("Horizontal") && !Input.GetKey(KeyCode.W))
                 return true;
             return false;
         }
 
         public bool BackWalkKeyPress()
         {
-            if (CanMove && Input.GetKey(KeyCode.S))
+            if (MoveAble && Input.GetKey(KeyCode.S))
                 return true;
             return false;
         }
 
         public void EvadeKeyPress()
         {
-            if (CanMove && Input.GetKeyDown(KeyCode.Space) && canEvade)
+            if (MoveAble && Input.GetKeyDown(KeyCode.Space) && evadeAble)
             {
                 float inputMag = new Vector3(GetAxisRawX(), 0, GetAxisRawZ()).normalized.magnitude;
                 if (!Mathf.Approximately(inputMag, 0))
                 {
                     player.State = PlayerState.Evade;
-                    canEvade = false;
+                    evadeAble = false;
                 }
             }
         }
 
         public void WeaponKeyPress()
         {
-            if (!player.PlayerCombat.IsAttack && CanMove)
+            if (!player.PlayerCombat.IsAttack && MoveAble)
             {
                 switch (player.WeaponState)
                 {
@@ -197,12 +198,12 @@ namespace project02
     {
         private void EvadeTimer()
         {
-            if (!canEvade)
+            if (!evadeAble)
             {
                 evadeIntervalTime += Time.fixedDeltaTime;
                 if (evadeIntervalTime >= 1.5f)
                 {
-                    canEvade = true;
+                    evadeAble = true;
                     evadeIntervalTime = 0;
                 }
             }

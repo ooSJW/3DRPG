@@ -35275,6 +35275,7 @@ MonoBehaviour:
   - {fileID: 1000013169864706, guid: c8caf2d119771fe4d8d802ce7d219b38, type: 3}
   - {fileID: 7226583673155636401, guid: 2f9cb8ebc4fb43c49bebcd751118bbc9, type: 3}
   - {fileID: 100000, guid: 93a5632144f032144876062b31522fb5, type: 3}
+  - {fileID: 3784650850016059025, guid: 9f62c4f3b7162524caa5312458ca5201, type: 3}
   <QuestController>k__BackingField: {fileID: 905196715}
   <Player>k__BackingField: {fileID: 30594757}
   <ZoneController>k__BackingField: {fileID: 1966870472}

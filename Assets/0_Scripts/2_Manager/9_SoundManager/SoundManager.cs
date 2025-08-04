@@ -37,7 +37,7 @@ namespace project02
             SoundController = soundController;
             SoundController.Initialize();
         }
-        public void SignDownSoundController()
+        public void SignOutSoundController()
         {
             SoundController = null;
         }

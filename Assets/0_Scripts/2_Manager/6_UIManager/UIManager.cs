@@ -36,7 +36,7 @@ namespace project02
             UIController = uIControllerValue;
             UIController.Initialize();
         }
-        public void SignDownUIController()
+        public void SignOutUIController()
         {
             UIController = null;
         }

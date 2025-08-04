@@ -36,7 +36,7 @@ namespace project02
             ZoneController = zoneControllerValue;
             ZoneController.Initialize();
         }
-        public void SignDownZoneController()
+        public void SignOutZoneController()
         {
             ZoneController = null;
         }

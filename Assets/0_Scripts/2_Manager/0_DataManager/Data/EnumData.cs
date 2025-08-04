@@ -25,6 +25,7 @@ namespace project02
         EnemyHitEffect,
         PlayerHitEffect,
         HpParticle,
+        DangerZone,
     }
 
     public enum PlayerState

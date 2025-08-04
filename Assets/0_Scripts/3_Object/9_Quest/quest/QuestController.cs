@@ -106,7 +106,7 @@ namespace project02
                 {
                     try
                     {
-                        MainSystem.Instance.PlayerManager.Player.PlayerInput.CanMove = false;
+                        MainSystem.Instance.PlayerManager.Player.PlayerInput.MoveAble = false;
                         MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.StartDialouge(NpcTransform);
                     }
                     catch (Exception ex)
@@ -118,7 +118,7 @@ namespace project02
                 {
                     try
                     {
-                        MainSystem.Instance.PlayerManager.Player.PlayerInput.CanMove = true;
+                        MainSystem.Instance.PlayerManager.Player.PlayerInput.MoveAble = true;
                         MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.EndDialouge();
                     }
                     catch (Exception ex)
@@ -291,7 +291,7 @@ namespace project02
             questValue.Initialize();
             questDict.Add(questValue.QuestIndex, questValue);
         }
-        public void SignDownQuest(BaseQuest questValue)
+        public void SignOutQuest(BaseQuest questValue)
         {
             questDict.Remove(questValue.QuestIndex);
         }

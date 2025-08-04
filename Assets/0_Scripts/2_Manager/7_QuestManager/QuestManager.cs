@@ -36,7 +36,7 @@ namespace project02
             QuestController = questControllerValue;
             QuestController.Initialize();
         }
-        public void SignDownQuestController()
+        public void SignOutQuestController()
         {
             QuestController = null;
         }

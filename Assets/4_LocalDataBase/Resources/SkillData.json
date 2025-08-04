@@ -124,7 +124,7 @@
       "active_time": 0,
       "melee_range": 0,
       "range": 17,
-      "angle_range": 60,
+      "angle_range": 70,
       "icon_path": "none",
       "effect_path": "none"
     }

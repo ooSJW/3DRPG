@@ -113,7 +113,7 @@ namespace project02
         }
         public void ClearDangerZone()
         {
-            enemy.EnemyCombat.ClearDangetZone();
+            enemy.EnemyCombat.ClearDangerZone();
         }
 
         public void UseSkill(SkillName skillName)

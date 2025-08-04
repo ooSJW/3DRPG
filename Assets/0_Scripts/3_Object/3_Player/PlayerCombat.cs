@@ -123,6 +123,8 @@ namespace project02
 
             for (int i = 0; i < hitEnemyList.Count; ++i)
             {
+                if (hitEnemyList[i] is null) continue;
+
                 hitEnemyList[i].LastDamageSender = player;
                 player.SendDamage(hitEnemyList[i], statInfo, skillDamage);
             }
@@ -140,7 +142,7 @@ namespace project02
             player.State = PlayerState.Idle;
             IsAttack = false;
             player.PlayerMovement.isEvade = false;
-            player.PlayerInput.CanMove = true;
+            player.PlayerInput.MoveAble = true;
         }
     }
 }

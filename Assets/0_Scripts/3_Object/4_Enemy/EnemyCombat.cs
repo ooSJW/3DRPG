@@ -48,6 +48,6 @@ namespace project02
         public virtual void BaseAttackFilter() { }
         public virtual void SkillFilter() { }
         public virtual void DrawDangerZone() { }
-        public virtual void ClearDangetZone() { }
+        public virtual void ClearDangerZone() { }
     }
 }

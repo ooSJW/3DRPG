@@ -6,6 +6,7 @@
 namespace project02
 {
     using DG.Tweening;
+    using FMOD;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -59,12 +60,18 @@ namespace project02
         private float intervalTime = 0;
         private float skillCollingTime = 7f;
 
-
         public Material dangerMaterial;
+
+        private GameObject dangerZone;
+
+        private Material dangerZoneMaterial;
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
         private Mesh dangerMesh;
+
+
         public int segments = 30;
+
     }
 
 
@@ -82,6 +89,7 @@ namespace project02
             dangerMaterial.color = new Color(1f, 0f, 0f, 0.5f);
 
             meshRenderer.material = dangerMaterial;
+            dangerZoneMaterial = Resources.Load<Material>("Material/DangerZone");
         }
         public override void Initialize(Enemy enemyValue)
         {
@@ -173,10 +181,7 @@ namespace project02
         {
             SkillInformation skillInfo = BossSkillDict[bossSkill].SkillInfo;
 
-            float radius = skillInfo.range;
-            float angleRange = skillInfo.angle_range;
-            float heightOffset = 0.1f;
-
+            /*구버전/ShaderGraph로 변경
             dangerMesh = new Mesh();
             List<Vector3> vertices = new List<Vector3>();
             List<int> triangles = new List<int>();
@@ -212,10 +217,36 @@ namespace project02
             meshFilter.transform.position = bossPosition;
             meshFilter.transform.rotation = transform.rotation;
             meshRenderer.enabled = true;
+            StartCoroutine(StartDrawDangerZone());
+            */
+            float radius = skillInfo.range;
+            float yawAngle = skillInfo.angle_range;
+
+            dangerZone = MainSystem.Instance.PoolManager.Spawn(PoolObject.DangerZone.ToString(), transform);
+            DangerZone zone = dangerZone.GetComponent<DangerZone>();
+
+            zone.Initialize(radius, yawAngle, 0.9f);
+            zone.RequestDrawZone(transform.rotation.eulerAngles, yawAngle);
         }
-        public override void ClearDangetZone()
+
+        private IEnumerator StartDrawDangerZone()
         {
-            meshRenderer.enabled = false;
+            SkillInformation skillInfo = BossSkillDict[bossSkill].SkillInfo;
+
+            float radius = skillInfo.range;
+            float angleRange = skillInfo.angle_range;
+            DangerZone zone = MainSystem.Instance.PoolManager.Spawn(PoolObject.DangerZone.ToString(), transform).GetComponent<DangerZone>();
+            zone.Initialize(radius, angleRange);
+            dangerZoneMaterial.SetFloat("Radius", radius);
+            dangerZoneMaterial.SetFloat("Angle", angleRange);
+
+            yield break;
+        }
+
+        public override void ClearDangerZone()
+        {
+            //meshRenderer.enabled = false;
+            MainSystem.Instance.PoolManager.Despawn(dangerZone.gameObject);
         }
 
         public override void SkillFilter()
@@ -228,9 +259,9 @@ namespace project02
             {
                 Vector3 direction = targetCollider[i].transform.position - center;
 
-                float angle = Vector3.Angle(transform.forward, direction);
+                float angle = Vector3.SignedAngle(transform.forward, direction, Vector3.up);
 
-                if (angle <= skillInfo.angle_range * 0.5f)
+                if (Mathf.Abs(angle) <= skillInfo.angle_range * 0.5f)
                 {
                     hitPlayerList.Add(targetCollider[i].GetComponent<Player>());
                     Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
@@ -271,8 +302,8 @@ namespace project02
 
         public override void RandomPattern()
         {
-            int random = UnityEngine.Random.Range((int)SkillName.BossWind, (int)SkillName.BossShootEnergy + 1);
-            switch (random)
+            int randomSkill = UnityEngine.Random.Range((int)SkillName.BossWind, (int)SkillName.BossShootEnergy + 1);
+            switch (randomSkill)
             {
                 case (int)SkillName.BossWind:
                     BossSkill = SkillName.BossWind;
@@ -282,5 +313,42 @@ namespace project02
                     break;
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            if (!Application.isPlaying) return;
+
+            Gizmos.color = Color.red;
+
+            Vector3 origin = transform.position;
+            Vector3 forward = transform.forward;
+            SkillInformation skillInfo = BossSkillDict[SkillName.BossShootEnergy].SkillInfo;
+            float angle = skillInfo.angle_range;
+            float radius = skillInfo.range;
+            float halfAngle = angle * 0.5f;
+            float step = angle / segments;
+
+            for (int i = 0; i <= segments; i++)
+            {
+                float currentAngle = -halfAngle + step * i;
+                Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
+                Vector3 dir = rotation * forward;
+
+                Vector3 endPoint = origin + dir.normalized * radius;
+                Gizmos.DrawLine(origin, endPoint);
+
+                // 선으로 호 연결 (부채꼴 외곽선)
+                if (i > 0)
+                {
+                    float prevAngle = -halfAngle + step * (i - 1);
+                    Vector3 prevDir = Quaternion.Euler(0, prevAngle, 0) * forward;
+                    Vector3 prevPoint = origin + prevDir.normalized * radius;
+
+                    Gizmos.DrawLine(prevPoint, endPoint);
+                }
+            }
+        }
+#endif
     }
 }

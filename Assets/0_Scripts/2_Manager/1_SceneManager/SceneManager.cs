@@ -42,7 +42,7 @@ namespace project02
             ActiveScene.Initialize();
         }
 
-        public void SignDownActiveScene()
+        public void SignOutActiveScene()
         {
             ActiveScene = null;
         }

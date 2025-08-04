@@ -119,7 +119,7 @@ namespace project02
                             break;
 
                         case PlayerState.Stun:
-                            PlayerInput.CanMove = false;
+                            PlayerInput.MoveAble = false;
                             PlayerAnimation.SetAnimationStateTrigger(PlayerState.Stun);
                             break;
 

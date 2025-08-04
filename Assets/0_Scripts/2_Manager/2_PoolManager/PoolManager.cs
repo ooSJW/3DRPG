@@ -93,7 +93,7 @@ namespace project02
                     poolingObjectList.Remove(poolableObject);
 
                     poolableObject.transform.SetParent(parentValue);
-                    poolableObject.transform.position = spawnPosition;
+                    poolableObject.transform.position = spawnPosition == default ? parentValue.position : spawnPosition;
 
                     poolableObject.SetActive(true);
                 }
