@@ -106,7 +106,7 @@ namespace project02
                 {
                     try
                     {
-                        MainSystem.Instance.PlayerManager.Player.PlayerInput.MoveAble = false;
+                        MainSystem.Instance.PlayerManager.Player.PlayerInput.Moveable = false;
                         MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.StartDialouge(NpcTransform);
                     }
                     catch (Exception ex)
@@ -118,7 +118,7 @@ namespace project02
                 {
                     try
                     {
-                        MainSystem.Instance.PlayerManager.Player.PlayerInput.MoveAble = true;
+                        MainSystem.Instance.PlayerManager.Player.PlayerInput.Moveable = true;
                         MainSystem.Instance.SceneManager.ActiveScene.FollowCamera.EndDialouge();
                     }
                     catch (Exception ex)

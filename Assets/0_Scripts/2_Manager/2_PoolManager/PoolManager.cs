@@ -11,11 +11,11 @@ namespace project02
     using UnityEngine;
 
 
-    public partial class PoolManager : MonoBehaviour // Data Field
+    public partial class PoolManager : MonoBehaviour // Pool객체를 관리할 매니저 클래스
     {
         private Dictionary<string, Pool> poolDictionary = default;
     }
-    public partial class PoolManager : MonoBehaviour // Initialize
+    public partial class PoolManager  // Initialize
     {
         private void Allocate()
         {
@@ -31,7 +31,7 @@ namespace project02
 
         }
     }
-    public partial class PoolManager : MonoBehaviour // Property
+    public partial class PoolManager  
     {
         public void Register()
         {
@@ -45,29 +45,29 @@ namespace project02
             }
         }
 
-        public GameObject Spawn(string name, Transform parent = null, Vector3 spawnPosition = default)
+        public GameObject RequestSpawn(string name, Transform parent = null, Vector3 spawnPosition = default)
         {
             return poolDictionary[name].Spawn(parent, spawnPosition);
         }
 
-        public void Despawn(GameObject poolableObject)
+        public void RequestDespawn(GameObject poolableObject)
         {
             poolDictionary[poolableObject.name].Despawn(poolableObject);
         }
     }
 
-    public partial class PoolManager : MonoBehaviour // Inner Class
+    public partial class PoolManager  // Inner Class
     {
         public class Pool
         {
             private Transform parent;
             private GameObject originalPrefab;
-            private List<GameObject> poolingObjectList;
+            private Queue<GameObject> poolingObjectQueue;
             private int initialCount;
 
             public Pool(GameObject originalPrefabValue, int initialCountValue = 10)
             {
-                poolingObjectList = new List<GameObject>();
+                poolingObjectQueue = new Queue<GameObject>();
                 originalPrefab = originalPrefabValue;
                 parent = new GameObject() { name = $"Root_{originalPrefab.name}" }.transform;
                 initialCount = initialCountValue;
@@ -80,17 +80,16 @@ namespace project02
                     GameObject poolableObject = Instantiate(originalPrefab, parent.transform.position, Quaternion.identity, parent);
                     poolableObject.name = originalPrefab.name;
                     poolableObject.SetActive(false);
-                    poolingObjectList.Add(poolableObject);
+                    poolingObjectQueue.Enqueue(poolableObject);
                 }
             }
 
             public GameObject Spawn(Transform parentValue = null, Vector3 spawnPosition = default)
             {
                 GameObject poolableObject = null;
-                if (poolingObjectList.Count > 0)
+                if (poolingObjectQueue.Count > 0)
                 {
-                    poolableObject = poolingObjectList[0];
-                    poolingObjectList.Remove(poolableObject);
+                    poolableObject = poolingObjectQueue.Dequeue();
 
                     poolableObject.transform.SetParent(parentValue);
                     poolableObject.transform.position = spawnPosition == default ? parentValue.position : spawnPosition;
@@ -113,7 +112,7 @@ namespace project02
             public void Despawn(GameObject poolObject)
             {
                 poolObject.SetActive(false);
-                poolingObjectList.Add(poolObject);
+                poolingObjectQueue.Enqueue(poolObject);
                 poolObject.transform.SetParent(parent);
             }
         }

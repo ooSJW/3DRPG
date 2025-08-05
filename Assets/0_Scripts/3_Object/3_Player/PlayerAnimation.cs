@@ -46,9 +46,9 @@ namespace project02
     }
     public partial class PlayerAnimation : MonoBehaviour // Property
     {
-        public void SetCanMove(int canMoveValue)
+        public void SetMoveable(int moveableValue)
         {
-            player.PlayerInput.SetCanMove(Convert.ToBoolean(canMoveValue));
+            player.PlayerInput.SetMoveable(Convert.ToBoolean(moveableValue));
         }
 
         public void SetPlayerWeaponStateAnimation()

@@ -60,7 +60,7 @@ namespace project02
             Player player = other.GetComponent<Player>();
             Vector3 hitPoint = other.ClosestPoint(transform.position);
             hitPoint.y += 0.8f;
-            MainSystem.Instance.PoolManager.Spawn(PoolObject.PlayerHitEffect.ToString(), null, hitPoint);
+            MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.PlayerHitEffect.ToString(), null, hitPoint);
             enemy.SendDamage(player, enemy.EnemyStatInformation);
         }
     }

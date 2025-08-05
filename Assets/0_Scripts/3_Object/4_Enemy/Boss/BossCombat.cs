@@ -24,7 +24,7 @@ namespace project02
                 if (bossSkill != value)
                 {
                     bossSkill = value;
-                    enemy.IsAttack = true;
+                    enemy.IsAttacking = true;
                     switch (bossSkill)
                     {
                         case SkillName.BossWind:
@@ -42,7 +42,7 @@ namespace project02
                             break;
 
                         default:
-                            enemy.IsAttack = false;
+                            enemy.IsAttacking = false;
                             break;
                     }
                 }
@@ -170,17 +170,17 @@ namespace project02
                     hitPlayerList.Add(hitPlayer);
                     Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
                     hitPoint.y += 0.8f;
-                    MainSystem.Instance.PoolManager.Spawn(PoolObject.PlayerHitEffect.ToString(), null, hitPoint);
+                    MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.PlayerHitEffect.ToString(), null, hitPoint);
                 }
             }
             SendDamage();
         }
 
-
+        // Enemy 스킬 사용 시 dangerZone생성
         public override void DrawDangerZone()
         {
-            SkillInformation skillInfo = BossSkillDict[bossSkill].SkillInfo;
 
+            SkillInformation skillInfo = BossSkillDict[bossSkill].SkillInfo;
             /*구버전/ShaderGraph로 변경
             dangerMesh = new Mesh();
             List<Vector3> vertices = new List<Vector3>();
@@ -219,14 +219,16 @@ namespace project02
             meshRenderer.enabled = true;
             StartCoroutine(StartDrawDangerZone());
             */
+
             float radius = skillInfo.range;
             float yawAngle = skillInfo.angle_range;
 
-            dangerZone = MainSystem.Instance.PoolManager.Spawn(PoolObject.DangerZone.ToString(), transform);
+            dangerZone = MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.DangerZone.ToString(), transform);
             DangerZone zone = dangerZone.GetComponent<DangerZone>();
 
+            // 스킬 Json의 내용이 달라지면 dangerZone에 자동으로 적용되도록 매개변수로 넘김.
             zone.Initialize(radius, yawAngle, 0.9f);
-            zone.RequestDrawZone(transform.rotation.eulerAngles, yawAngle);
+            zone.RequestDrawZone(yawAngle);
         }
 
         private IEnumerator StartDrawDangerZone()
@@ -235,7 +237,7 @@ namespace project02
 
             float radius = skillInfo.range;
             float angleRange = skillInfo.angle_range;
-            DangerZone zone = MainSystem.Instance.PoolManager.Spawn(PoolObject.DangerZone.ToString(), transform).GetComponent<DangerZone>();
+            DangerZone zone = MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.DangerZone.ToString(), transform).GetComponent<DangerZone>();
             zone.Initialize(radius, angleRange);
             dangerZoneMaterial.SetFloat("Radius", radius);
             dangerZoneMaterial.SetFloat("Angle", angleRange);
@@ -246,7 +248,7 @@ namespace project02
         public override void ClearDangerZone()
         {
             //meshRenderer.enabled = false;
-            MainSystem.Instance.PoolManager.Despawn(dangerZone.gameObject);
+            MainSystem.Instance.PoolManager.RequestDespawn(dangerZone.gameObject);
         }
 
         public override void SkillFilter()
@@ -266,7 +268,7 @@ namespace project02
                     hitPlayerList.Add(targetCollider[i].GetComponent<Player>());
                     Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
                     hitPoint.y += 0.8f;
-                    MainSystem.Instance.PoolManager.Spawn(PoolObject.PlayerHitEffect.ToString(), null, hitPoint);
+                    MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.PlayerHitEffect.ToString(), null, hitPoint);
                 }
             }
             SendDamage();
@@ -303,7 +305,7 @@ namespace project02
         public override void RandomPattern()
         {
             int randomSkill = UnityEngine.Random.Range((int)SkillName.BossWind, (int)SkillName.BossShootEnergy + 1);
-            switch (randomSkill)
+            switch ((int)SkillName.BossShootEnergy)
             {
                 case (int)SkillName.BossWind:
                     BossSkill = SkillName.BossWind;

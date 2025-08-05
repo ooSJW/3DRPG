@@ -87,7 +87,7 @@ namespace project02
                 damage -= Defense;
 
             Hp -= damage;
-            GameObject damageObj = MainSystem.Instance.PoolManager.Spawn(PoolObject.HpParticle.ToString(), damageTextTransform, damageTextTransform.position);
+            GameObject damageObj = MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.HpParticle.ToString(), damageTextTransform, damageTextTransform.position);
             DamageUI dmgUI = damageObj.GetComponent<DamageUI>();
             dmgUI.Initialize();
             dmgUI.SetDamageText(damage, isCritical);

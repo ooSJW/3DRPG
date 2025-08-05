@@ -6,18 +6,10 @@
 namespace project02
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Reflection;
-    using System.Linq;
-    using Unity.VisualScripting;
     using UnityEngine;
     using static project02.PlayerStatData;
-    using UnityEditor;
-    using DG.Tweening;
-    using static UnityEngine.Rendering.DebugUI;
-    using Newtonsoft.Json.Linq;
-    using UnityEditor.Experimental.GraphView;
+
 
     public partial class Player : CombatObjectBase // Data Property
     {
@@ -119,7 +111,7 @@ namespace project02
                             break;
 
                         case PlayerState.Stun:
-                            PlayerInput.MoveAble = false;
+                            PlayerInput.Moveable = false;
                             PlayerAnimation.SetAnimationStateTrigger(PlayerState.Stun);
                             break;
 
@@ -159,7 +151,7 @@ namespace project02
                     if (playerSkill != SkillName.None)
                     {
                         State = PlayerState.Attack;
-                        PlayerCombat.IsAttack = true;
+                        PlayerCombat.IsAttacking = true;
                         PlayerAnimation.SetAttackAnimation(playerSkill);
                         PlayerSkillDict[playerSkill].IsCoolTime = true;
                     }
@@ -247,12 +239,6 @@ namespace project02
     {
         private void Update()
         {
-            if (CloseToHealer)
-            {
-                if (Input.GetKeyDown(KeyCode.R))
-                    Hp = playerStatInformation.maxHp;
-            }
-
             if (state != PlayerState.Death)
             {
                 PlayerInput.Progress();
@@ -283,19 +269,18 @@ namespace project02
             infoUI.SetHpUI(Hp, PlayerStatInformation.maxHp);
         }
         private void SkillInitialize()
-        {
-            Type type = typeof(Player);
-            string nameSpace = type.Namespace;
+        {   // 초기화 시 Json에 선언된 내용을 스킬에 적용 및 참조
+            string nameSpace = typeof(Player).Namespace;
             for (int i = 0; i < PlayerStatInformation.useable_skill.Length; i++)
             {
                 string skillName = PlayerStatInformation.useable_skill[i];
                 Type skill = Type.GetType(nameSpace + "." + skillName);
 
-                if (skill != null)
+                if (skill is not null)
                 {
                     SkillBase skillBase = gameObject.AddComponent(skill) as SkillBase;
 
-                    if (skillBase != null)
+                    if (skillBase is not null)
                     {
                         skillBase.Initialize(this);
                         PlayerSkillDict.Add(skillBase.GetSkillName(), skillBase);

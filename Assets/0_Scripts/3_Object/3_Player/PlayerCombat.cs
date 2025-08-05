@@ -22,7 +22,7 @@ namespace project02
         public float r;
         public float g;
 
-        public bool IsAttack { get; set; } = false;
+        public bool IsAttacking { get; set; } = false;
 
         [SerializeField] private LayerMask layer;
     }
@@ -52,7 +52,7 @@ namespace project02
             if (player.State == PlayerState.Attack && player.PlayerSkill == SkillName.None)
             {
                 player.State = PlayerState.Idle;
-                IsAttack = false;
+                IsAttacking = false;
             }
         }
     }
@@ -83,7 +83,7 @@ namespace project02
                         Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
                         hitPoint.y += 1;
 
-                        MainSystem.Instance.PoolManager.Spawn(PoolObject.EnemyHitEffect.ToString(), null, hitPoint);
+                        MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.EnemyHitEffect.ToString(), null, hitPoint);
                     }
                 }
                 SendDamage();
@@ -110,7 +110,7 @@ namespace project02
                     Vector3 hitPoint = targetCollider[i].ClosestPoint(transform.position);
                     hitPoint.y += 1;
 
-                    MainSystem.Instance.PoolManager.Spawn(PoolObject.EnemyHitEffect.ToString(), null, hitPoint);
+                    MainSystem.Instance.PoolManager.RequestSpawn(PoolObject.EnemyHitEffect.ToString(), null, hitPoint);
                 }
             }
             SendDamage();
@@ -133,16 +133,16 @@ namespace project02
 
         public void EndAttack()
         {
-            IsAttack = false;
+            IsAttacking = false;
         }
 
         public void ReturnState()
         {
             player.PlayerSkill = SkillName.None;
             player.State = PlayerState.Idle;
-            IsAttack = false;
+            IsAttacking = false;
             player.PlayerMovement.isEvade = false;
-            player.PlayerInput.MoveAble = true;
+            player.PlayerInput.Moveable = true;
         }
     }
 }

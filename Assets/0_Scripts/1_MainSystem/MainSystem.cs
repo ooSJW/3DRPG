@@ -10,7 +10,7 @@ namespace project02
     using System.Text;
     using UnityEngine;
 
-    public partial class MainSystem : GenericSingleton<MainSystem> // Data Field
+    public partial class MainSystem : GenericSingleton<MainSystem>// Data Field
     {
         public DataManager DataManager { get; private set; } = default;
         public QuestManager QuestManager { get; private set; } = default;
@@ -26,6 +26,7 @@ namespace project02
     {
         private void Allocate()
         {
+            // 매니저 클래스 추가 시 새로 할당만 해주면 끝, 확장에 유리
             DataManager = gameObject.AddComponent<DataManager>();
             QuestManager = gameObject.AddComponent<QuestManager>();
             SceneManager = gameObject.AddComponent<SceneManager>();
@@ -40,7 +41,7 @@ namespace project02
         {
             Allocate();
             Setup();
-
+            // 초기화 순서를 지키며 관리 가능.
             DataManager.Initialize();
             QuestManager.Initialize();
             SceneManager.Initialize();

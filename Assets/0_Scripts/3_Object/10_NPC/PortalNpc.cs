@@ -11,7 +11,7 @@ namespace project02
 
     public partial class PortalNpc : MonoBehaviour
     {
-        private bool canUsePortal = false;
+        private bool useablePortal = false;
         [SerializeField] private GameObject portalUI;
 
         private void Start()
@@ -20,7 +20,7 @@ namespace project02
         }
         private void Update()
         {
-            if (canUsePortal)
+            if (useablePortal)
             {
                 if (Input.GetKeyDown(KeyCode.R))
                 {
@@ -41,13 +41,13 @@ namespace project02
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Player"))
-                canUsePortal = true;
+                useablePortal = true;
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.CompareTag("Player"))
-                canUsePortal = false;
+                useablePortal = false;
         }
     }
 }

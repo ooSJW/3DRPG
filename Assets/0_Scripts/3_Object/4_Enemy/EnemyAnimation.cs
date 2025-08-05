@@ -74,7 +74,7 @@ namespace project02
         {
             enemy.EnemyCombat.BossSkill = SkillName.None;
             enemy.State = EnemyState.Idle;
-            enemy.IsAttack = false;
+            enemy.IsAttacking = false;
         }
 
         public void Knockback()

@@ -8,6 +8,7 @@ namespace project02
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.EventSystems;
 
     public partial class GenericSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {

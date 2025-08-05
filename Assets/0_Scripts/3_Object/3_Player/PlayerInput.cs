@@ -9,12 +9,13 @@ namespace project02
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.InputSystem;
+    using static project02.PlayerStatData;
 
     public partial class PlayerInput : MonoBehaviour // Data Field
     {
         private Player player;
-        private Action commandProgress = null;
-        public bool MoveAble { get; set; } = true;
+        private Action OnUpdate = null;
+        public bool Moveable { get; set; } = true;
         private bool evadeAble = true;
         private float evadeIntervalTime = 0;
 
@@ -28,10 +29,12 @@ namespace project02
         {
             commandDict = new Dictionary<int, SkillBase>();
 
-            commandProgress -= EvadeKeyPress;
-            commandProgress += EvadeKeyPress;
-            commandProgress -= WeaponKeyPress;
-            commandProgress += WeaponKeyPress;
+            OnUpdate -= EvadeKeyPress;
+            OnUpdate += EvadeKeyPress;
+            OnUpdate -= WeaponKeyPress;
+            OnUpdate += WeaponKeyPress;
+            OnUpdate -= Heal;
+            OnUpdate += Heal;
             InitSkillInput();
         }
         public void Initialize(Player playerValue)
@@ -50,7 +53,7 @@ namespace project02
     {
         public void Progress()
         {
-            commandProgress.Invoke();
+            OnUpdate?.Invoke();
         }
         public void FixedProgress()
         {
@@ -61,6 +64,7 @@ namespace project02
     {
         private void InitSkillInput()
         {
+            // 초기화시 비트마스크를 통한 키값 검사를 위해 InputSystem에 식 할당
             skillInput = new PlayerSkillInput();
             skillInput.Enable();
 
@@ -85,7 +89,7 @@ namespace project02
             skillInput.CommandKey.mouseRight.performed += ctx => inputBuffer |= (int)InputKey.mouse1;
             skillInput.CommandKey.mouseRight.canceled += ctx => inputBuffer &= ~(int)InputKey.mouse1;
 
-            // 초기화 시 할당 (InputSystem사용)
+            // 모든 전투 키에서 공통으로 사용될 기능은 한 번에 할당
             foreach (InputAction action in skillInput.CommandKey.Get())
             {
                 action.performed += ctx => OnAnyKey();
@@ -94,10 +98,10 @@ namespace project02
         private void OnAnyKey()
         {
             bool attackAble = player.State != PlayerState.Death &&
-                MoveAble &&
+                Moveable &&
                 player.WeaponState == PlayerWeaponState.Equip &&
                 !player.PlayerMovement.isEvade &&
-                !player.PlayerCombat.IsAttack;
+                !player.PlayerCombat.IsAttacking;
 
             // OnAnyKey 내부
             if (attackAble)
@@ -108,16 +112,24 @@ namespace project02
                     SkillName skillName = skill.GetSkillName();
 
                     if (skillName != SkillName.PistolBase)
+                    {
                         player.PlayerSkill = skillName;
-                    else
-                        PistolBase();
-
+                        return;
+                    }
                 }
-                else if (isMouse0Pressed)
+                if (isMouse0Pressed)
                     PistolBase();
             }
         }
 
+        private void Heal()
+        {
+            if (player.CloseToHealer)
+            {
+                if (Input.GetKeyDown(KeyCode.R))
+                    player.Hp = player.PlayerStatInformation.maxHp;
+            }
+        }
         private void PistolBase()
         {
             bool showCursor = MainSystem.Instance.UIManager.UIController.ShowCursor;
@@ -126,44 +138,44 @@ namespace project02
                 player.PlayerSkill = SkillName.PistolBase;
         }
 
-        public void SetCanMove(bool canMoveValue)
+        public void SetMoveable(bool moveableValue)
         {
-            MoveAble = canMoveValue;
+            Moveable = moveableValue;
         }
         public float GetAxisRawZ()
         {
-            return MoveAble ? Input.GetAxisRaw("Vertical") : 0;
+            return Moveable ? Input.GetAxisRaw("Vertical") : 0;
         }
 
         public float GetAxisRawX()
         {
-            return MoveAble ? Input.GetAxisRaw("Horizontal") : 0;
+            return Moveable ? Input.GetAxisRaw("Horizontal") : 0;
         }
 
         public bool RunKeyPress()
         {
-            if (MoveAble && (Input.GetButton("Vertical") || Input.GetButton("Horizontal")) && Input.GetKey(KeyCode.LeftShift))
+            if (Moveable && (Input.GetButton("Vertical") || Input.GetButton("Horizontal")) && Input.GetKey(KeyCode.LeftShift))
                 return true;
             return false;
         }
 
         public bool SideWalkKeyPress()
         {
-            if (MoveAble && Input.GetButton("Horizontal") && !Input.GetKey(KeyCode.W))
+            if (Moveable && Input.GetButton("Horizontal") && !Input.GetKey(KeyCode.W))
                 return true;
             return false;
         }
 
         public bool BackWalkKeyPress()
         {
-            if (MoveAble && Input.GetKey(KeyCode.S))
+            if (Moveable && Input.GetKey(KeyCode.S))
                 return true;
             return false;
         }
 
         public void EvadeKeyPress()
         {
-            if (MoveAble && Input.GetKeyDown(KeyCode.Space) && evadeAble)
+            if (Moveable && Input.GetKeyDown(KeyCode.Space) && evadeAble)
             {
                 float inputMag = new Vector3(GetAxisRawX(), 0, GetAxisRawZ()).normalized.magnitude;
                 if (!Mathf.Approximately(inputMag, 0))
@@ -176,7 +188,7 @@ namespace project02
 
         public void WeaponKeyPress()
         {
-            if (!player.PlayerCombat.IsAttack && MoveAble)
+            if (!player.PlayerCombat.IsAttacking && Moveable)
             {
                 switch (player.WeaponState)
                 {

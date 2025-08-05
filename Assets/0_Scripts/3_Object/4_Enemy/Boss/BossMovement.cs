@@ -36,7 +36,7 @@ namespace project02
     {
         public override void Progress()
         {
-            if (!enemy.IsAttack)
+            if (!enemy.IsAttacking)
             {
                 switch (enemy.State)
                 {
@@ -64,7 +64,7 @@ namespace project02
                         enemy.State = EnemyState.Idle;
                         break;
                     case EnemyState.Attack:
-                        if (enemy.Target != null)
+                        if (enemy.Target is not null)
                         {
                             StopNavSetting();
                             enemy.EnemyCombat.skillEnable = true;

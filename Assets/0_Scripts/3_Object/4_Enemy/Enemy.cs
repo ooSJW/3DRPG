@@ -67,9 +67,9 @@ namespace project02
 
                     state = value;
                     switch (state)
-                    {
+                    {   // 프로퍼티를 사용해, 상태에 따른 행동을 지정.
                         case EnemyState.Attack:
-                            IsAttack = true;
+                            IsAttacking = true;
                             EnemyMovement.StopNavSetting();
                             EnemyMovement.SetTargeting(false);
                             EnemyAnimation.SetTrigger(EnemyAnimationParam.Attack);
@@ -89,13 +89,12 @@ namespace project02
                             EnemyMovement.StopNavSetting();
                             EnemyMovement.SetTargeting(false);
                             EnemyAnimation.SetTrigger(EnemyAnimationParam.Death);
-                            if (LastDamageSender != null)
+                            if (LastDamageSender is not null)
                                 LastDamageSender.Exp += EnemyInformation.drop_exp;
                             break;
 
                         default:
-                            if (state != EnemyState.Death)
-                                EnemyMovement.MoveNavSetting();
+                            EnemyMovement.MoveNavSetting();
                             break;
                     }
                 }
@@ -103,11 +102,11 @@ namespace project02
         }
 
         public Vector3 hitPoint = default;
-        public Player LastDamageSender = default;
+        public Player LastDamageSender = null;
         public EnemyInformation EnemyInformation { get; private set; } = default;
         public EnemyStatInformation EnemyStatInformation { get; private set; } = default;
         public Vector3 OriginPosition { get; set; } = Vector3.zero;
-        public bool IsAttack { get; set; } = false;
+        public bool IsAttacking { get; set; } = false;
         public bool SuperArmor { get; set; }
 
         private ZoneObject zone = default;

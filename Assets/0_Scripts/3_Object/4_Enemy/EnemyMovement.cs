@@ -51,50 +51,7 @@ namespace project02
     {
         public virtual void Progress()
         {
-            if (!enemy.IsAttack)
-            {
-                switch (enemy.State)
-                {
-                    case EnemyState.Idle:
-                        StopNavSetting();
-                        isTargeting = false;
-                        if (enemy.Target != null)
-                            enemy.State = EnemyState.Follow;
-                        else
-                        {
-                            if (Vector3.Distance(transform.position, enemy.OriginPosition) > 2)
-                                enemy.State = EnemyState.Return;
-                        }
-
-                        if (GetAttackableInRange())
-                            enemy.State = EnemyState.Attack;
-                        break;
-
-                    case EnemyState.Follow:
-                        MoveNavSetting();
-                        SetDestPosition(enemy.Target.position);
-                        Movement(EnemyState.Follow);
-                        break;
-
-                    case EnemyState.Return:
-                        MoveNavSetting();
-                        Movement(EnemyState.Return);
-                        break;
-
-                    case EnemyState.Attack:
-                        if (enemy.Target != null)
-                            StopNavSetting();
-                        else
-                            enemy.State = EnemyState.Idle;
-                        break;
-
-                    default:
-                        agent.isStopped = true;
-                        break;
-
-                }
-            }
-            Targeting();
+            SelectState();
         }
     }
 
@@ -178,12 +135,62 @@ namespace project02
                     transform.position = Vector3.MoveTowards(transform.position, nextWayPoint, enemy.EnemyStatInformation.moveSpeed * Time.deltaTime);
 
                     float distanceToWayPoint = Vector3.Distance(transform.position, nextWayPoint);
-                    if (distanceToWayPoint < 0.1f)
+                    if (distanceToWayPoint < float.Epsilon)
                         pathIndex++;
                 }
             }
-            if (Mathf.Approximately((transform.position - destPosition).magnitude, 0))
+            if (Mathf.Approximately((transform.position - destPosition).sqrMagnitude, 0))
                 pathIndex = 0;
+        }
+
+        protected virtual void SelectState()
+        {
+            if (enemy.Target is null) return;
+
+            if (!enemy.IsAttacking)
+            {
+                switch (enemy.State)
+                {   // 범위 내에 플레이어 진입 시 상태를 정해주는 함수.
+                    case EnemyState.Idle:
+                        StopNavSetting();
+                        isTargeting = false;
+                        if (enemy.Target is not null)
+                            enemy.State = EnemyState.Follow;
+                        else
+                        {
+                            if (Vector3.Distance(transform.position, enemy.OriginPosition) > 2)
+                                enemy.State = EnemyState.Return;
+                        }
+
+                        if (GetAttackableInRange())
+                            enemy.State = EnemyState.Attack;
+                        break;
+
+                    case EnemyState.Follow:
+                        MoveNavSetting();
+                        SetDestPosition(enemy.Target.position);
+                        Movement(EnemyState.Follow);
+                        break;
+
+                    case EnemyState.Return:
+                        MoveNavSetting();
+                        Movement(EnemyState.Return);
+                        break;
+
+                    case EnemyState.Attack:
+                        if (enemy.Target is not null)
+                            StopNavSetting();
+                        else
+                            enemy.State = EnemyState.Idle;
+                        break;
+
+                    default:
+                        agent.isStopped = true;
+                        break;
+
+                }
+            }
+            Targeting();
         }
 
         protected virtual void Movement(EnemyState state)
@@ -196,9 +203,7 @@ namespace project02
                 switch (state)
                 {
                     case EnemyState.Follow:
-                        if ((enemy.Target.position - destPosition).magnitude > enemy.EnemyStatInformation.attackRange)
-                            SetDestPosition(enemy.Target.position);
-
+                        SetDestPosition(enemy.Target.position);
                         isTargeting = true;
                         break;
 

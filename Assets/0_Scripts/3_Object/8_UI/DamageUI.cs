@@ -41,7 +41,7 @@ namespace project02
         private void Update()
         {
             if (Mathf.Approximately(transform.position.y, destPos.y))
-                MainSystem.Instance.PoolManager.Despawn(gameObject);
+                MainSystem.Instance.PoolManager.RequestDespawn(gameObject);
 
             Vector3 resultPos = transform.position;
             resultPos.y = destPos.y;

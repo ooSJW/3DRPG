@@ -9,11 +9,11 @@ namespace project02
     using System.Collections.Generic;
     using UnityEngine;
 
-    public partial class QuestManager : MonoBehaviour // Initialize
+    public partial class QuestManager : MonoBehaviour  // Initialize
     {
         public QuestController QuestController { get; private set; } = default;
     }
-    public partial class QuestManager : MonoBehaviour // Data Field
+    public partial class QuestManager  // Data Field
     {
         private void Allocate()
         {
@@ -29,7 +29,7 @@ namespace project02
 
         }
     }
-    public partial class QuestManager : MonoBehaviour // Sign
+    public partial class QuestManager  // Sign
     {
         public void SignUpQuestController(QuestController questControllerValue)
         {

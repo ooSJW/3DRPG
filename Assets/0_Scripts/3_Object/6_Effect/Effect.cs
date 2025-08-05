@@ -22,7 +22,7 @@ namespace project02
             if (intervalTime >= lifeTime)
             {
                 intervalTime = 0;
-                MainSystem.Instance.PoolManager.Despawn(this.gameObject);
+                MainSystem.Instance.PoolManager.RequestDespawn(this.gameObject);
             }
         }
     }

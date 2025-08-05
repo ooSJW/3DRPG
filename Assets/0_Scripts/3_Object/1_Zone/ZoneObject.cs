@@ -45,7 +45,7 @@ namespace project02
         public List<Enemy> AllFieldEnemyObjectList { get; set; } = default;
         public int SpawnableMaxCount { get; private set; } = 0;
 
-        [SerializeField] protected float radius = 15;
+        [SerializeField] protected float radius = 7.5f;
         [SerializeField] protected ZoneDetector zoneDetector = default;
         [SerializeField] protected LayerMask groundLayer;
         protected ZoneInformation zoneInformation = default;
@@ -106,10 +106,10 @@ namespace project02
     }
 
     public partial class ZoneObject : MonoBehaviour // Property
-    {
+    {   // rpg의 몬스터 1캠프를 의미하는 클래스로 몬스터의 활성화, 비활성화를 pool에 요청.
         public Vector3 GetRandomPositionInZone()
         {
-            Vector3 resultPosition = transform.position + UnityEngine.Random.onUnitSphere * (radius * 0.5f);
+            Vector3 resultPosition = transform.position + UnityEngine.Random.onUnitSphere * radius;
             resultPosition.y = transform.position.y;
 
             if (Physics.Raycast(resultPosition, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundLayer))
@@ -121,27 +121,20 @@ namespace project02
                 return default;
         }
 
-        public void Despawn(Enemy enemyValue)
-        {
-            AllFieldEnemyObjectList.Remove(enemyValue);
-            MainSystem.Instance.PoolManager.Despawn(enemyValue.gameObject);
-        }
-    }
-
-    public partial class ZoneObject : MonoBehaviour // Private Property
-    {
         protected void Spawn()
         {
             while (AllFieldEnemyObjectList.Count < SpawnableMaxCount)
             {
                 Vector3 resultPos = GetRandomPositionInZone();
+                if (resultPos == default) continue;
 
+                int enemyIndex = UnityEngine.Random.Range(0, spawnableEnemyList.Count);
                 Enemy enemy =
                 MainSystem.Instance.PoolManager.
-                    Spawn(spawnableEnemyList[UnityEngine.Random.Range(0, spawnableEnemyList.Count)].name, transform, resultPos).GetComponent<Enemy>();
-
+                    RequestSpawn(spawnableEnemyList[enemyIndex].name, transform, resultPos).GetComponent<Enemy>();
 
                 MainSystem.Instance.EnemyManager.SignUpEnemy(enemy);
+
                 enemy.transform.position = resultPos;
                 enemy.OriginPosition = resultPos;
 
@@ -149,6 +142,12 @@ namespace project02
                 AllFieldEnemyObjectList.Add(enemy);
             }
         }
+        public void Despawn(Enemy enemyValue)
+        {
+            AllFieldEnemyObjectList.Remove(enemyValue);
+            MainSystem.Instance.PoolManager.RequestDespawn(enemyValue.gameObject);
+        }
+
     }
     public partial class ZoneObject : MonoBehaviour // DrawGizmos
     {
